@@ -865,6 +865,18 @@ export interface ExperimentalConfig {
    * @default false
    */
   runtimeServerDeploymentId?: boolean
+
+  /**
+   * Use 'no-cache' instead of 'no-store' in the Cache-Control header for development.
+   * This allows conditional requests to the server, which can help with development
+   * workflows that benefit from caching validation.
+   *
+   * When enabled, the Cache-Control header changes from 'no-store, must-revalidate'
+   * to 'no-cache, must-revalidate'.
+   *
+   * @default false
+   */
+  devCacheControlNoCache?: boolean
 }
 
 export type ExportPathMap = {
@@ -1591,6 +1603,7 @@ export const defaultConfig = Object.freeze({
     turbopackFileSystemCacheForDev: true,
     turbopackFileSystemCacheForBuild: false,
     turbopackInferModuleSideEffects: !isStableBuild(),
+    devCacheControlNoCache: false,
   },
   htmlLimitedBots: undefined,
   bundlePagesRouterDependencies: false,
@@ -1686,6 +1699,7 @@ export interface NextConfigRuntime {
     | 'proxyTimeout'
     | 'testProxy'
     | 'runtimeServerDeploymentId'
+    | 'devCacheControlNoCache'
   > & {
     // Pick on @internal fields generates invalid .d.ts files
     /** @internal */
@@ -1742,6 +1756,7 @@ export function getNextConfigRuntime(
         proxyTimeout: ex.proxyTimeout,
         testProxy: ex.testProxy,
         runtimeServerDeploymentId: ex.runtimeServerDeploymentId,
+        devCacheControlNoCache: ex.devCacheControlNoCache,
 
         trustHostHeader: ex.trustHostHeader,
         isExperimentalCompile: ex.isExperimentalCompile,
