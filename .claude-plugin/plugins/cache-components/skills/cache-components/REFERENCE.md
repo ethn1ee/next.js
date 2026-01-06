@@ -25,41 +25,10 @@ async function Component() {
 
 ### Variants
 
-| Directive              | Description              | Cache Storage            |
-| ---------------------- | ------------------------ | ------------------------ |
-| `'use cache'`          | Standard cache (default) | Default handler + Remote |
-| `'use cache: private'` | User-specific cache      | Resume Data Cache only   |
-| `'use cache: remote'`  | Platform remote cache    | Remote handler only      |
-
-### `'use cache: private'`
-
-Allows reading `cookies()` and `headers()` directly. Not included in static shell.
-
-```tsx
-async function UserSpecificContent() {
-  'use cache: private'
-
-  const userId = (await cookies()).get('userId')?.value
-  const data = await fetchUserData(userId)
-
-  return <div>{data.name}</div>
-}
-```
-
-**Limitations**:
-
-- Cannot be nested inside regular `'use cache'`
-- Not stored in persistent cache handlers
-- Dynamic at request time
-
-**When to use `'use cache: private'` vs parameter extraction**:
-
-| Approach                | Best For                                      | Trade-off                        |
-| ----------------------- | --------------------------------------------- | -------------------------------- |
-| `'use cache: private'`  | Complex user-specific data with many DB calls | Not in static shell, always runs |
-| Parameter extraction    | Simple user ID lookup, shared cache benefits  | Extra wrapper component          |
-
-> **Recommendation**: Prefer parameter extraction (Pattern 2 in PATTERNS.md) for most cases. Use `'use cache: private'` only when extracting parameters would require many round trips or complex logic.
+| Directive             | Description              | Cache Storage            |
+| --------------------- | ------------------------ | ------------------------ |
+| `'use cache'`         | Standard cache (default) | Default handler + Remote |
+| `'use cache: remote'` | Platform remote cache    | Remote handler only      |
 
 ### `'use cache: remote'`
 
@@ -78,7 +47,7 @@ async function HeavyComputation() {
 
 1. **Must be async** - All cached functions must return a Promise
 2. **First statement** - `'use cache'` must be the first statement in the function body
-3. **No runtime APIs** - Cannot call `cookies()`, `headers()`, `searchParams` directly (except in `'use cache: private'`)
+3. **No runtime APIs** - Cannot call `cookies()`, `headers()`, `searchParams` directly
 4. **Serializable arguments** - All arguments must be serializable (no functions, class instances)
 
 ---
